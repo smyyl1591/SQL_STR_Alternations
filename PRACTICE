@@ -1,0 +1,87 @@
+
+---[串接函數]---------------------------------------------------------------------------
+
+--REF:https://docs.microsoft.com/zh-tw/sql/t-sql/data-types/data-type-conversion-database-engine?view=sql-server-ver15--  
+--字串 &　數值轉換
+
+
+/* /* /* --串接情境--
+--1 is a string.
+--@string 被宣告為字串 所以可以與後面的文字串接
+DECLARE @string VARCHAR(10);
+SET @string = 1;
+SELECT @string + ' is a string.'
+ */
+
+/* --將 varchar 值 ' is not a string.' 轉換成資料類型 int 時，轉換失敗。
+DECLARE @notastring INT; --@notastring被宣告為數值
+SET @notastring = '1';
+SELECT @notastring + ' is not a string.' --@notastring為數值，無法與後面的文字"串接" (數值 + 字串 => ERROR)
+ */
+
+/* --因為已宣告@notastring為整數 (SQL順序優先於字串)
+--2
+DECLARE @notastring INT;
+SET @notastring = '1'; --數值
+SELECT @notastring + '1' -- 形同於1+1 = 2
+ */
+/* --+ & CAST組合
+'[Day: ' + CAST(DayNr AS VARCHAR(5)) + '] ' + CAST(tia.Description AS VARCHAR(MAX)) AS Description
+ */ */ */
+
+
+--字串定義--
+binary [ ( n ) ] 固定長度的二進位資料，其長度為 n 位元組，其中 n 是 1 到 8,000 的值。 儲存體大小是 n 位元組。
+varbinary [ ( n | max) ] 可變長度的二進位資料。 n 可以是從 1 到 8,000 之間的值。 
+varbinary 的 ANSI SQL 同義字是 binary varying
+
+--max 表示儲存體大小上限是 2^31-1 個位元組 
+--儲存體大小是輸入資料的實際長度再加上 2 位元組 
+--輸入的資料有可能是 0 位元組 
+備註
+資料類型	使用時機...
+binary	當資料行資料項目的大小一致時。
+varbinary	當資料行資料項目的大小變化相當大時。
+varbinary(max)	當資料行資料項目超過 8,000 位元組時。
+
+
+--字串串接函數:CONCAT-- 
+--Result
+--Happy Birthday 11/25
+SELECT CONCAT ( 'Happy ', 'Birthday ', 11, '/', '25' ) AS Result;  
+
+
+--TRIM--
+--刪減字串函數--
+--" "內的字串會被保留
+--TRIM(FirstName + " "+ LastName)  
+
+
+
+--PARSE--
+--PARSE ( string_value AS data_type [ USING culture ] )  
+--EG.1 SELECT PARSE('Monday, 13 December 2010' AS datetime2 USING 'en-US') AS Result;  
+--EG.2 The English language is mapped to en-US specific culture  
+SET LANGUAGE 'English';  
+SELECT PARSE('12/16/2010' AS datetime2) AS Result;
+
+
+
+
+
+
+---[排序函數]--------------------------------------------------------------------------
+--RANK / ROW_NUMBER / DENSE_NUMBER:
+--REF: https://codingsight.com/similarities-and-differences-among-rank-dense_rank-and-row_number-functions/ 
+
+--RANK, ROW_NUMBER, DENSE_NUMBER 的差別:
+--ROW_NUMBER 會依序為"所有資料列"編號 (例如 1、2、3、4、5), 不論前後值是否重複, 都會有獨一的編號
+--RANK 為繫結提供相同的數值(即有重複值會被算進同一個排序) (例如 1、2、2、4、5)
+
+--如果N個先前的等級之間存在平局，則RANK函數將跳過下一個N-1等級。
+--另一方面，如果等級之間存在平局，則DENSE_RANK函數不會跳過等級。
+--最後，ROW_NUMBER函數與排名無關。它僅返回排序記錄的行號。
+
+--RANK，DENSE_RANK和ROW_NUMBER函數具有以下相似之處：
+--1 所有這些都需要order by子句。
+--2 它們全部返回基值為1的遞增整數
