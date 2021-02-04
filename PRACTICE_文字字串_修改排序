@@ -66,10 +66,6 @@ SET LANGUAGE 'English';
 SELECT PARSE('12/16/2010' AS datetime2) AS Result;
 
 
-
-
-
-
 ---[排序函數]--------------------------------------------------------------------------
 --RANK / ROW_NUMBER / DENSE_NUMBER:
 --REF: https://codingsight.com/similarities-and-differences-among-rank-dense_rank-and-row_number-functions/ 
